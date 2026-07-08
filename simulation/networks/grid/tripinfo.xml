@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-07-08T22:35:00.682216+05:30 by Eclipse SUMO sumo 1.27.1
+<sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/grid_network.net.xml"/>
+        <route-files value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/routes.rou.xml"/>
+    </input>
+
+    <output>
+        <emission-output value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/emissions.xml"/>
+        <queue-output value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/queue.xml"/>
+        <tripinfo-output value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/tripinfo.xml"/>
+        <statistic-output value="C:\savee\saveee\saveee\ML_PROJECT\smart-traffic-rl-master\simulation/networks/grid/statistics.xml"/>
+    </output>
+
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+
+    <processing>
+        <max-num-vehicles value="1000"/>
+        <scale value="1"/>
+        <time-to-teleport value="-1"/>
+        <time-to-teleport.highways value="0"/>
+        <waiting-time-memory value="100"/>
+    </processing>
+
+    <report>
+        <verbose value="true"/>
+        <no-warnings value="true"/>
+        <no-step-log value="false"/>
+    </report>
+
+    <traci_server>
+        <remote-port value="2677"/>
+        <num-clients value="1"/>
+    </traci_server>
+
+    <gui_only>
+        <start value="true"/>
+    </gui_only>
+
+</sumoConfiguration>
+-->
+
+<tripinfos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tripinfo_file.xsd">

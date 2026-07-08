@@ -1,0 +1,31 @@
+# Virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs & output
+logs/
+tensorboard_logs/
+tensorboard_logs_multi/
+streamlit_output.txt
+*.log
+
+# Large model files (use GitHub Releases instead)
+agents/*.zip
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Unnecessary files
+get-pip.py
+scratch/

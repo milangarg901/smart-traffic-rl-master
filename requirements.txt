@@ -1,0 +1,25 @@
+# Core RL Libraries
+gymnasium
+stable-baselines3
+torch
+pettingzoo>=1.24.1
+# supersuit is installed manually with --no-deps to avoid C++ compilation issues with tinyscaler
+
+# SUMO Dependencies (install via pip)
+traci
+libsumo
+
+# Data Processing & Visualization
+numpy>=1.24.0
+pandas>=2.0.0
+plotly>=5.17.0
+matplotlib
+
+# Dashboard
+streamlit>=1.28.0
+
+# Additional Utilities
+pyyaml
+tqdm
+pytest
+black
