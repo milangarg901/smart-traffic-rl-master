@@ -1,128 +1,79 @@
-# 🚦 Smart Traffic RL — User Manual & Setup Guide
+# Smart Traffic RL — Setup and usage
 
-Multi-Agent Reinforcement Learning for Intelligent Traffic Control.
+## Environment
 
----
+Start with Python 3.10 or 3.11. Dependencies are not locked, so other Python versions and package combinations require testing.
 
-## 📋 Prerequisites & System Requirements
+Install SUMO using the [official download instructions](https://sumo.dlr.de/docs/Downloads.php). Set `SUMO_HOME` to your installation directory and add its `bin` directory to PATH. Verify both `sumo --version` and `netconvert --version`. The Python TraCI package does not replace the external network-generation tools.
 
-Before running the project, ensure you have the following installed:
+## Install dependencies
 
-| Requirement | Supported Versions | Purpose |
-| :--- | :--- | :--- |
-| **Python** | 3.10, 3.11, or 3.14+ | Core runtime environment |
-| **SUMO Simulator** | 1.19+ (recommended 1.26+) | Microscopic traffic simulation engine |
-| **pip** | Latest | Python package manager |
-| **PowerShell / Terminal** | 5.1+ (Windows) / Bash (Linux/macOS) | CLI Execution |
+From the repository root:
 
----
-
-## ⚙️ Environment Setup
-
-### 1. SUMO Simulator Installation
-The simulator **SUMO** (Simulation of Urban MObility) must be installed on your system.
-
-*   **Windows (via winget - Recommended)**:
-    ```powershell
-    winget install EclipseFoundation.SUMO --silent
-    ```
-*   **Windows (Manual)**: Download the installer from the [Eclipse SUMO website](https://sumo.dlr.de/docs/Downloads.php).
-*   **Linux (Ubuntu/Debian)**:
-    ```bash
-    sudo add-apt-repository ppa:sumo/stable
-    sudo apt-get update && sudo apt-get install sumo sumo-tools
-    ```
-*   **macOS (via Homebrew)**:
-    ```bash
-    brew install sumo
-    ```
-
-### 2. Configure environment variables
-Ensure `SUMO_HOME` points to your SUMO installation folder:
-*   **Windows**:
-    ```powershell
-    [System.Environment]::SetEnvironmentVariable("SUMO_HOME", "C:\Program Files (x86)\Eclipse\Sumo", "User")
-    ```
-*   **Linux/macOS**: Add this to your `.bashrc` or `.zshrc`:
-    ```bash
-    export SUMO_HOME="/usr/share/sumo"  # or homebrew path on macOS
-    ```
-
----
-
-## 🚀 Running the Project
-
-### Step 1: Create & Activate Virtual Environment
-```powershell
-# Create venv
-python -m venv venv
-
-# Activate on Windows
-.\venv\Scripts\Activate.ps1
-
-# Activate on Linux/macOS
-source venv/bin/activate
+```bash
+python -m venv .venv
 ```
 
-### Step 2: Install Packages
+Activate with `.\.venv\Scripts\Activate.ps1` in Windows PowerShell, or `source .venv/bin/activate` on Linux/macOS. If activation is unavailable, invoke the environment Python directly.
+
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+python -m pip install supersuit tensorboard rich
 ```
 
-### Step 3: Launch Interactive CLI Menu
+## Start the dashboard
+
 ```bash
+python run_dashboard.py
+```
+
+The launcher uses the active Python interpreter, the repository directory, and the dashboard host/port in `config.py`. It reports missing Streamlit without automatically modifying the environment. Missing configured model weights produce a warning. Demo data is not evidence of trained-policy performance.
+
+Alternatively:
+
+```bash
+python -m streamlit run dashboard/app.py
+```
+
+## Simulation and training
+
+Run from the repository root:
+
+```bash
+# Generate grid network (requires netconvert)
+python simulation/networks/grid/generate_network.py
+
+# Open the interactive menu
 python main.py
+
+# Train single-agent PPO (asks for confirmation)
+python main.py --mode train
+
+# Multi-agent training and evaluation pipeline
+python training/train_multi.py
+
+# Run existing test suites
+python main.py --mode test
 ```
 
-The terminal will present the interactive main menu:
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                       MAIN MENU                             │
-├─────────────────────────────────────────────────────────────┤
-│  1. Train Single Agent (PPO with Curriculum Learning)       │
-│  2. Train Multi-Agent (MAPPO for 9 Intersections)           │
-│  3. Run Dashboard (Real-time Visualization)                 │
-│  4. Run Evaluation Only                                     │
-│  5. Run Adversarial Tests                                   │
-│  6. Generate SUMO Network                                   │
-│  7. Run All Tests                                           │
-│  8. Exit                                                    │
-└─────────────────────────────────────────────────────────────┘
-```
+Review traffic demand, reward weights, training budgets, and checkpoint paths in `config.py` before a long run. Configured PPO checkpoints are `agents/ppo_final.zip` and `agents/mappo_final.zip`; the bundled `models/dqn_traffic.zip` is a different artifact. Check algorithm and observation/action compatibility before reusing weights.
 
----
+## Evaluation limitations
 
-## 🧭 Recommended Execution Order (First-Time Run)
+The main menu evaluation-only mode is unfinished. The multi-agent script has a `--skip-training` option for a compatible checkpoint, but evaluation still needs validation. Some plots and coordination statistics contain illustrative constants or random data. Do not report these as measured gains.
 
-1.  **Generate SUMO Network (Option 6)**: Builds the custom 3x3 intersection city grid files.
-2.  **Run All Tests (Option 7)**: Verifies your environment, SUMO integration, and environment observation spaces are fully operational.
-3.  **Run Dashboard (Option 3)**: Launches the interactive dashboard to visualize current performance and real-time inference on the pre-trained weights.
-4.  **Train Single Agent (Option 1)**: Initiates curriculum learning on the center intersection.
-5.  **Train Multi-Agent (Option 2)**: Fine-tunes weights across all 9 intersections cooperatively.
+For reproducible experiments, save the commit, dependency versions, SUMO version, seeds, scenario, checkpoint, episode count, baseline definition, metric units, and raw per-episode measurements.
 
----
+## Troubleshooting
 
-## 📊 Direct Command-Line Access
-You can bypass the menu interface by launching main.py directly with flags:
+| Symptom | Check |
+| --- | --- |
+| Missing Python module | Use `python -m pip` with the interpreter running the app. |
+| Missing SuperSuit | Install `supersuit` in the active environment. |
+| SUMO or netconvert not found | Check installation, PATH, and `SUMO_HOME`. |
+| TraCI failure | Inspect SUMO error output, network paths, and port availability. |
+| Dashboard port occupied | Run `python -m streamlit run dashboard/app.py --server.port 8502`. |
+| PPO checkpoint missing | Train the corresponding pipeline and verify configured paths. |
+| Package installation fails | Check support for your Python and platform; do not assume a dependency-free install is complete. |
 
-```bash
-# Run training pipelines
-python main.py --mode train      # Curriculum training
-python main.py --mode multi      # Multi-agent fine-tuning
-
-# Visualizations & Audits
-python main.py --mode dashboard  # Live Streamlit dashboard
-python main.py --mode eval       # Baseline comparison
-python main.py --mode test       # Execution test suites
-```
-
----
-
-## 🛠️ Troubleshooting
-
-| Issue | Root Cause | Solution |
-| :--- | :--- | :--- |
-| `ModuleNotFoundError` | Virtual environment inactive | Activate the venv: `.\venv\Scripts\Activate.ps1` |
-| `traci.exceptions.FatalTraCIError` | `SUMO_HOME` is not set | Set your `SUMO_HOME` environment variable |
-| `Execution Policy Error` | Windows restriction on scripts | Run: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` |
-| Port Conflict (8501) | Dashboard is already running | Launch with custom port: `streamlit run dashboard/app.py --server.port 8502` |
+See the [project overview](README.md) for features and current status.
